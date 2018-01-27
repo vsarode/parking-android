@@ -27,6 +27,14 @@
         <activity
             android:name=".SignUp"
             android:label="@string/title_activity_sign_up"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Prakingground"
+            android:label="@string/title_activity_prakingground"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Parkingslots"
+            android:label="@string/title_activity_parkingslots"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

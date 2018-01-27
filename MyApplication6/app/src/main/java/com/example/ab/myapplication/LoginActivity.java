@@ -89,6 +89,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
         if (view.getId() == R.id.email_sign_in_button) {
             attemptLogin();
+            Intent intent = new Intent(this, Prakingground.class);
+            startActivity(intent);
         }
     }
 }

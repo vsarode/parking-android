@@ -14,4 +14,7 @@
         completions."
     </string>
     <string name="title_activity_sign_up">SignUp</string>
+    <string name="title_activity_parkingground">parkingground</string>
+    <string name="title_activity_parkingslots">Parkingslots</string>
+    <string name="title_activity_prakingground">Prakingground</string>
 </resources>
