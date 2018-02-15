@@ -4,16 +4,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.ab.myapplication.constants.Constants;
 
@@ -22,41 +19,48 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Map;
 
-public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-    private final String email;
-    private final String password;
+public class UserSignUp extends AsyncTask<Void, Void, Boolean> {
     Context contex;
-    boolean result = false;
+    String uname;
+    String uemail;
+    String uaddress;
+    String umobile;
+    String upwd;
+    String ucpwd;
+    boolean success;
 
-    public UserLoginTask(String email, String password, Context contex) {
-        this.email = email;
-        this.password = password;
+    public UserSignUp(Context contex, String uname, String uemail, String uaddress, String umobile, String upwd, String ucpwd) {
         this.contex = contex;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        Toast.makeText(this.contex, "Logging in...", Toast.LENGTH_SHORT).show();
+        this.uname = uname;
+        this.uemail = uemail;
+        this.uaddress = uaddress;
+        this.umobile = umobile;
+        this.upwd = upwd;
+        this.ucpwd = ucpwd;
+        success = false;
     }
 
     @Override
     protected Boolean doInBackground(Void... params) {
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(contex);
-            String url = Constants.SERVER_URL + "/login/";
+            String url = Constants.SERVER_URL + "/user/";
             HashMap<String, String> paramsBody = new HashMap<>();
-            paramsBody.put("email", email);
-            paramsBody.put("password", password);
+
+            paramsBody.put("name", uname);
+            paramsBody.put("email", uemail);
+            paramsBody.put("password", upwd);
+            paramsBody.put("address", uaddress);
+            paramsBody.put("mobileNo", umobile);
+
             JsonObjectRequest request = new JsonObjectRequest(url, new JSONObject(paramsBody), new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    System.out.println("Request Success ######################");
-                    result = true;
+                    System.out.println("Request Success ######################" + response);
+                    success = true;
                 }
+
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
@@ -78,12 +82,13 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        System.out.println("Success Value ------------------" + success);
+        return success;
     }
 
     @Override
-    protected void onPostExecute(final Boolean success) {
-        if (result) {
+    protected void onPostExecute(Boolean success) {
+        if (success) {
             System.out.println("GOt success response.......^^^^^^^^^^^^^^^^^^^^");
             Toast.makeText(contex, "Success...", Toast.LENGTH_SHORT).show();
         } else {

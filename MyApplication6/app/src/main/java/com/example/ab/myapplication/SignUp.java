@@ -12,7 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class SignUp extends AppCompatActivity {
+import com.example.ab.myapplication.asyncTask.UserLoginTask;
+import com.example.ab.myapplication.asyncTask.UserSignUp;
+
+public class SignUp extends AppCompatActivity implements View.OnClickListener {
     EditText name;
     EditText email;
     EditText address;
@@ -20,6 +23,8 @@ public class SignUp extends AppCompatActivity {
     EditText pwd;
     EditText confirmpwd;
     Button sign_up;
+    private UserSignUp mAuthTask = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,27 +41,7 @@ public class SignUp extends AppCompatActivity {
         sign_up = (Button) findViewById(R.id.btnsign_up);
         final Context Iam = this;
 
-        sign_up.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                String uname = name.getText().toString();
-                String uemail = email.getText().toString();
-                String uaddress = address.getText().toString();
-                String umobile = mobile.getText().toString();
-                String upwd = pwd.getText().toString();
-                String ucpwd = confirmpwd.getText().toString();
-                String usignup = sign_up.getText().toString();
-
-                Toast.makeText(Iam,"Successfull Registration",Toast.LENGTH_LONG).show();
-                name.setText(" ");
-                email.setText(" ");
-                address.setText(" ");
-                mobile.setText(" ");
-                pwd.setText(" ");
-                confirmpwd.setText(" ");
-            }
-        });
+        sign_up.setOnClickListener(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,4 +52,29 @@ public class SignUp extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onClick(View view) {
+        if (mAuthTask != null) {
+            return;
+        }
+        String uname = name.getText().toString();
+        String uemail = email.getText().toString();
+        String uaddress = address.getText().toString();
+        String umobile = mobile.getText().toString();
+        String upwd = pwd.getText().toString();
+        String ucpwd = confirmpwd.getText().toString();
+        try {
+            new UserSignUp(this, uname, uemail, uaddress, umobile, upwd, ucpwd).execute();
+            Toast.makeText(this, "Called server", Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        name.setText(" ");
+        email.setText(" ");
+        address.setText(" ");
+        mobile.setText(" ");
+        pwd.setText(" ");
+        confirmpwd.setText(" ");
+    }
 }

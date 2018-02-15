@@ -1,8 +1,8 @@
 package com.example.ab.myapplication;
 
 public class User {
-    String id;
-    String username;
+    String email;
+    String name;
     User currentUser;
     private User() {
     }
@@ -15,14 +15,14 @@ public class User {
         return currentUser;
     }
 
-    public User CreateUser(String id, String username) {
+    public User CreateUser(String email, String name) {
         if (currentUser != null) {
             System.out.println("User already Logged In");
             return null;
         }
         currentUser = new User();
-        currentUser.id = id;
-        currentUser.username = username;
+        currentUser.email = email;
+        currentUser.name = name;
         return currentUser;
     }
 
