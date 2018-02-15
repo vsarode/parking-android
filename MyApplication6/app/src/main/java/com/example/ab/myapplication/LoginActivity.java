@@ -2,6 +2,7 @@ package com.example.ab.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,11 +18,11 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     private UserLoginTask mAuthTask = null;
 
-    // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mLoginFormView;
     private Context myContext;
+    Button mEmailSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         Button mSignUpButton = (Button) findViewById(R.id.SignUp);
 
         mSignUpButton.setOnClickListener(this);
@@ -86,6 +87,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         if (view.getId() == R.id.SignUp) {
             Intent intent = new Intent(this, SignUp.class);
             startActivity(intent);
+            mEmailSignInButton.setBackgroundColor(Color.RED);
         }
         if (view.getId() == R.id.email_sign_in_button) {
             attemptLogin();
