@@ -1,18 +1,19 @@
 package com.example.ab.myapplication;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.ab.myapplication.asyncTask.UserLoginTask;
+import com.android.volley.Response;
+import com.example.ab.myapplication.asyncTask.SignUpSuccess;
 import com.example.ab.myapplication.asyncTask.UserSignUp;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener {
@@ -39,9 +40,9 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         confirmpwd = (EditText) findViewById(R.id.txtconfirmpwd);
 
         sign_up = (Button) findViewById(R.id.btnsign_up);
-        final Context Iam = this;
 
         sign_up.setOnClickListener(this);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,18 +64,22 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         String umobile = mobile.getText().toString();
         String upwd = pwd.getText().toString();
         String ucpwd = confirmpwd.getText().toString();
+        final Context thisActivity = this;
         try {
-            new UserSignUp(this, uname, uemail, uaddress, umobile, upwd, ucpwd).execute();
-            Toast.makeText(this, "Called server", Toast.LENGTH_LONG).show();
-
+            new UserSignUp(this, uname, uemail, uaddress, umobile, upwd, ucpwd, new Response.Listener() {
+                @Override
+                public void onResponse(Object response) {
+                    Toast.makeText(thisActivity, "Got success response..", Toast.LENGTH_SHORT).show();
+                }
+            }).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        name.setText(" ");
-        email.setText(" ");
-        address.setText(" ");
-        mobile.setText(" ");
-        pwd.setText(" ");
-        confirmpwd.setText(" ");
+        name.setText("");
+        email.setText("");
+        address.setText("");
+        mobile.setText("");
+        pwd.setText("");
+        confirmpwd.setText("");
     }
 }

@@ -29,18 +29,14 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
     private final String email;
     private final String password;
     Context contex;
+    private Response.Listener successListener;
     boolean result = false;
 
-    public UserLoginTask(String email, String password, Context contex) {
+    public UserLoginTask(String email, String password, Context contex, Response.Listener successListener) {
         this.email = email;
         this.password = password;
         this.contex = contex;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        Toast.makeText(this.contex, "Logging in...", Toast.LENGTH_SHORT).show();
+        this.successListener = successListener;
     }
 
     @Override
@@ -51,27 +47,10 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
             HashMap<String, String> paramsBody = new HashMap<>();
             paramsBody.put("email", email);
             paramsBody.put("password", password);
-            JsonObjectRequest request = new JsonObjectRequest(url, new JSONObject(paramsBody), new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    System.out.println("Request Success ######################");
-                    result = true;
-                }
-            }, new Response.ErrorListener() {
+            JsonObjectRequest request = new JsonObjectRequest(url, new JSONObject(paramsBody), successListener, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    NetworkResponse response = error.networkResponse;
-                    if (error instanceof ServerError && response != null) {
-                        try {
-                            String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                            JSONObject obj = new JSONObject(res);
-                            System.out.println("--------------Response : " + obj.toString());
-                        } catch (UnsupportedEncodingException e1) {
-                            e1.printStackTrace();
-                        } catch (JSONException e2) {
-                            e2.printStackTrace();
-                        }
-                    }
+                    System.out.println("Error while logging in");
                 }
             });
             requestQueue.add(request);
@@ -79,15 +58,5 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
             e.printStackTrace();
         }
         return result;
-    }
-
-    @Override
-    protected void onPostExecute(final Boolean success) {
-        if (result) {
-            System.out.println("GOt success response.......^^^^^^^^^^^^^^^^^^^^");
-            Toast.makeText(contex, "Success...", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(contex, "Login Attempt Failed", Toast.LENGTH_SHORT).show();
-        }
     }
 }

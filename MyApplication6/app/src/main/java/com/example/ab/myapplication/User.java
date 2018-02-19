@@ -3,7 +3,8 @@ package com.example.ab.myapplication;
 public class User {
     String email;
     String name;
-    User currentUser;
+    static User currentUser;
+
     private User() {
     }
 
@@ -15,7 +16,7 @@ public class User {
         return currentUser;
     }
 
-    public User CreateUser(String email, String name) {
+    public User createUser(String email, String name) {
         if (currentUser != null) {
             System.out.println("User already Logged In");
             return null;
@@ -28,5 +29,9 @@ public class User {
 
     public boolean isLoggedIn() {
         return currentUser != null;
+    }
+
+    public void logOut() {
+        currentUser = null;
     }
 }

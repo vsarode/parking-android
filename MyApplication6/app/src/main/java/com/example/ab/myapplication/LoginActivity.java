@@ -12,7 +12,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.android.volley.Response;
 import com.example.ab.myapplication.asyncTask.UserLoginTask;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity implements OnClickListener {
 
@@ -55,27 +59,60 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-
-
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        boolean isValidData = true;
+        if (TextUtils.isEmpty(email) || !isEmailValid(email)) {
+            mEmailView.setError("Invalid Email");
+            isValidData = false;
         }
-
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError("Invalid password");
+            isValidData = false;
         }
-
+        if (!isValidData) {
+            return;
+        }
+        final LoginActivity thisActivity = this;
         try {
-            new UserLoginTask(email, password, myContext).execute();
+            new UserLoginTask(email, password, myContext, new Response.Listener() {
+                @Override
+                public void onResponse(Object response) {
+                    try {
+                        JSONObject loginResponse = new JSONObject(response.toString());
+                        Object res = loginResponse.get("responseData");
+                        if (((JSONObject) res).get("login").toString().equals("Failure")) {
+                            System.out.println("Failed to Login");
+                            thisActivity.handleFailure();
+                        } else {
+                            System.out.println("SuccessFully Logged In");
+                            thisActivity.handleSuccess();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void handleSuccess() {
+        this.clearFileds();
+        Intent intent = new Intent(this, ParkingGround.class);
+        startActivity(intent);
+    }
+
+    private void handleFailure() {
+        this.clearFileds();
+    }
+
     private boolean isEmailValid(String email) {
         return email.contains("@");
+    }
+
+    private void clearFileds() {
+        mEmailView.setText("");
+        mPasswordView.setText("");
     }
 
     private boolean isPasswordValid(String password) {
@@ -91,8 +128,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
         if (view.getId() == R.id.email_sign_in_button) {
             attemptLogin();
-            Intent intent = new Intent(this, Prakingground.class);
-            startActivity(intent);
         }
     }
 }
