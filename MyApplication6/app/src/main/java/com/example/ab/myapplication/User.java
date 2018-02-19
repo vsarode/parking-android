@@ -16,10 +16,10 @@ public class User {
         return currentUser;
     }
 
-    public User createUser(String email, String name) {
+    public static User createUser(String email, String name) {
         if (currentUser != null) {
             System.out.println("User already Logged In");
-            return null;
+            return currentUser;
         }
         currentUser = new User();
         currentUser.email = email;

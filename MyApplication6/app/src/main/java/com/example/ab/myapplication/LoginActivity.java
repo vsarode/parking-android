@@ -78,16 +78,17 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                 public void onResponse(Object response) {
                     try {
                         JSONObject loginResponse = new JSONObject(response.toString());
-                        Object res = loginResponse.get("responseData");
-                        if (((JSONObject) res).get("login").toString().equals("Failure")) {
+                        if (loginResponse.getBoolean("status")) {
+                            System.out.println("SuccessFully Logged In");
+                            Object res = loginResponse.get("responseData");
+                            String user = ((JSONObject) res).get("user").toString();
+                            thisActivity.handleSuccess(user);
+                        } else {
                             System.out.println("Failed to Login");
                             thisActivity.handleFailure();
-                        } else {
-                            System.out.println("SuccessFully Logged In");
-                            thisActivity.handleSuccess();
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        System.out.println("Failed to parse response object");
                     }
                 }
             }).execute();
@@ -96,7 +97,16 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
     }
 
-    private void handleSuccess() {
+    private void handleSuccess(String user) {
+        try {
+            JSONObject userObj = new JSONObject(user);
+            String name = userObj.getString("name");
+            String emai = userObj.getString("email");
+            User myUser = User.createUser(name,emai);
+        } catch (JSONException e) {
+            System.out.println("Failed to parse User Object");
+        }
+
         this.clearFileds();
         Intent intent = new Intent(this, ParkingGround.class);
         startActivity(intent);

@@ -1,6 +1,5 @@
 package com.example.ab.myapplication;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,7 +12,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Response;
-import com.example.ab.myapplication.asyncTask.SignUpSuccess;
 import com.example.ab.myapplication.asyncTask.UserSignUp;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener {
@@ -75,6 +73,10 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        clearFields();
+    }
+
+    private void clearFields() {
         name.setText("");
         email.setText("");
         address.setText("");
